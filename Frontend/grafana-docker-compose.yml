@@ -1,0 +1,30 @@
+services:
+  grafana:
+    image: grafana/grafana-oss
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    environment:
+      - GF_PROVISIONING_PATH=/etc/grafana/provisioning
+      - 'GF_INSTALL_PLUGINS=${GRAFANA_PLUGINS}'
+      - 'GF_FEATURE_TOGGLES_ENABLE=publicDashboards'
+      - GF_AUTH_ANONYMOUS_ENABLED=${ANON_ENABLED-true}
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=${ANON_ROLE-Admin}
+      - 'MQTT_URI=${MQTT_URI}'
+      - SERVICE_FQDN_GRAFANA_3000
+      - 'GF_SERVER_ROOT_URL=${SERVICE_FQDN_GRAFANA}'
+      - 'GF_SERVER_DOMAIN=${SERVICE_FQDN_GRAFANA}'
+      - 'GF_SECURITY_ADMIN_PASSWORD=${SERVICE_PASSWORD_GRAFANA}'
+      - 'GF_SECURITY_ADMIN_USER=${SERVICE_SUPERUSER_GRAFANA}'
+      - 'MQTT_USER=${MQTT_USER}'
+      - 'MQTT_PASSWORD=${MQTT_PASSWORD}'
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards/
+      - ./grafana/datasources:/etc/grafana/provisioning/datasources/
+      - ./grafana/plugins:/etc/grafana/provisioning/plugins/
+
+volumes:
+  grafana-storage: {}

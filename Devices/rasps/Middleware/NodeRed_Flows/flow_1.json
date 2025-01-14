@@ -1,0 +1,315 @@
+[
+    {
+        "id": "fe5b2307db4b6c2a",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "a750eb90da7b5e19",
+        "type": "mqtt in",
+        "z": "fe5b2307db4b6c2a",
+        "name": "sensor_temp",
+        "topic": "sensor/temp",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "29af5ebab63f9173",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 170,
+        "y": 680,
+        "wires": [
+            [
+                "e2f6ed7043773d16",
+                "f27f69e24820898b",
+                "22f16d9cd85f0cbc",
+                "27957dda5847d60e"
+            ]
+        ]
+    },
+    {
+        "id": "e2f6ed7043773d16",
+        "type": "change",
+        "z": "fe5b2307db4b6c2a",
+        "name": "value",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload[\"temperature\"]",
+                "tot": "msg",
+                "dc": true
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "temperature",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 370,
+        "y": 620,
+        "wires": [
+            [
+                "fbf7238b1b9a7e96"
+            ]
+        ]
+    },
+    {
+        "id": "e641ec1578109411",
+        "type": "debug",
+        "z": "fe5b2307db4b6c2a",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 560,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "fbf7238b1b9a7e96",
+        "type": "moving-average",
+        "z": "fe5b2307db4b6c2a",
+        "name": "movingAverage",
+        "amount": 10,
+        "weight": "linear",
+        "x": 560,
+        "y": 620,
+        "wires": [
+            [
+                "e39aabdfd648373d",
+                "4c9c2625b8b5e4bb"
+            ]
+        ]
+    },
+    {
+        "id": "f27f69e24820898b",
+        "type": "change",
+        "z": "fe5b2307db4b6c2a",
+        "name": "timestamp",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload[\"timestamp\"]",
+                "tot": "msg",
+                "dc": true
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "timestamp",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 390,
+        "y": 720,
+        "wires": [
+            [
+                "e641ec1578109411",
+                "4c9c2625b8b5e4bb"
+            ]
+        ]
+    },
+    {
+        "id": "e39aabdfd648373d",
+        "type": "debug",
+        "z": "fe5b2307db4b6c2a",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 880,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "4c9c2625b8b5e4bb",
+        "type": "join",
+        "z": "fe5b2307db4b6c2a",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "useparts": false,
+        "accumulate": false,
+        "timeout": "0",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 770,
+        "y": 720,
+        "wires": [
+            [
+                "487372a633832c9a",
+                "27d03d438a3048c3"
+            ]
+        ]
+    },
+    {
+        "id": "487372a633832c9a",
+        "type": "debug",
+        "z": "fe5b2307db4b6c2a",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 940,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "27d03d438a3048c3",
+        "type": "mqtt out",
+        "z": "fe5b2307db4b6c2a",
+        "d": true,
+        "name": "Server",
+        "topic": "sensor/temp/movAvg",
+        "qos": "2",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "f54bf4bebcc617a1",
+        "x": 950,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "22f16d9cd85f0cbc",
+        "type": "mqtt out",
+        "z": "fe5b2307db4b6c2a",
+        "d": true,
+        "name": "Server",
+        "topic": "sensor/temp/raw",
+        "qos": "2",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "f54bf4bebcc617a1",
+        "x": 350,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "27957dda5847d60e",
+        "type": "debug",
+        "z": "fe5b2307db4b6c2a",
+        "name": "debug 4",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 360,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "29af5ebab63f9173",
+        "type": "mqtt-broker",
+        "name": "Localhost",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "f54bf4bebcc617a1",
+        "type": "mqtt-broker",
+        "name": "server",
+        "broker": "mq-config.example.com",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    }
+]

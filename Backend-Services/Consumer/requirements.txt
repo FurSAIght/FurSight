@@ -1,0 +1,3 @@
+python-dotenv
+paho-mqtt
+supabase==2.7.4

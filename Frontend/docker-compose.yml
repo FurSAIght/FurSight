@@ -1,0 +1,56 @@
+services:
+  webapp:
+    container_name: webapp
+    ports:
+      - '5000:3000'
+    build:
+      context: ./webapp
+      dockerfile: Dockerfile.local
+    volumes:
+      - ./webapp:/app
+      - /app/node_modules
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.svelte.rule=Host(`svelte.localhost`)'
+      - 'traefik.http.routers.svelte.entryPoints=web'
+
+  grafana:
+    image: grafana/grafana-oss
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    environment:
+      - GF_PROVISIONING_PATH=/etc/grafana/provisioning
+      - GF_INSTALL_PLUGINS=grafana-mqtt-datasource
+      - GF_FEATURE_TOGGLES_ENABLE=publicDashboards
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - MQTT_URI=${MQTT_URI}
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards/
+      - ./grafana/datasources:/etc/grafana/provisioning/datasources/
+      - ./grafana/plugins:/etc/grafana/provisioning/plugins/
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.grafana.rule=Host(`grafana.localhost`)'
+      - 'traefik.http.routers.grafana.entryPoints=web'
+
+  traefik:
+    image: traefik:v3.1
+    container_name: traefik
+    ports:
+      - '80:80'
+      - '8080:8080'
+    command:
+      - '--api.insecure=true'
+      - '--providers.docker=true'
+      - '--providers.docker.exposedbydefault=false'
+      - '--entryPoints.web.address=:80'
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock:ro'
+
+volumes:
+  grafana-storage: {}
